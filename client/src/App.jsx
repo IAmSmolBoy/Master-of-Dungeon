@@ -13,7 +13,6 @@ function App() {
         .split("-")
         .map(word => word.charAt(0).toUpperCase() + word.slice(1))
         .join(" ");
-    
 
     return (
         <main className={className}>

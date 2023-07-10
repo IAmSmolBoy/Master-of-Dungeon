@@ -6,8 +6,6 @@ import axios from "axios"
 
 import { IoMdAddCircle } from "react-icons/io"
 
-import { uploadImage, getImageByUrl } from "../../middleware/ImgBB"
-
 import Modal from "../../components/Modal/Modal"
 import Navbar from "../../components/Navbar/Navbar"
 
@@ -31,9 +29,9 @@ import "./Map Page.scss"
 
 export default function MapPage({ setClassName }) {
 
-    const [image, setImage] = useState(null);
-    const [x, setX] = useState(0)
-    const [y, setY] = useState(0)
+    const [ image, setImage ] = useState(null);
+    const [ x, setX ] = useState(0)
+    const [ y, setY ] = useState(0)
 
 
 
@@ -51,40 +49,26 @@ export default function MapPage({ setClassName }) {
 
     // --------------------- Helper Functions ---------------------
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+    // Upload
 
     function handleUpload(e) {
-        const file = $(e.target).prop("files")[0]
-        setImage(file)
-
-        var reader = new FileReader();
-        reader.readAsDataURL(file);
-
-        reader.onload = function (event) {
-            var maps = localStorage.getItem("maps")
-            maps = !maps ? [] : maps.split(", ")
-
-            maps.push(file.name)
-
-            localStorage.setItem("maps", maps.join(", "));
-            localStorage.setItem(file.name, event.target.result);
-        };
-        reader.onerror = function (error) {
-            console.log('Error: ', error);
-        };
+        const file = $(e).prop("files")[0]
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     // ------------------------ Components ------------------------
 
@@ -137,27 +121,10 @@ export default function MapPage({ setClassName }) {
             }
         });
 
-        // ================ Modal ================
+    }, [ setClassName ])
 
-        // Toggling Modal show or hide
 
-        function toggleModal() {
-            $(".modal").toggleClass("show")
-            $(".modal-background").toggleClass("darken")
-            $(".modal-content").css("animation", "expand .5s ease-in-out")
-        }
 
-        function closeModal() {
-            $(".modal-content").css("animation", "contract .5s ease-in-out")
-            setTimeout(toggleModal, 500);
-        }
-
-        // Add Button Click Listener
-
-        $("button.nav-list-item-add").on("click", toggleModal)
-        $(".modal-background, .modal-close-btn").on("click", closeModal)
-
-    }, [setClassName])
 
     return (
         <>

@@ -6,3 +6,5 @@ storage.rules
 .firebaserc
 .github
 .firebase
+
+client/.env
