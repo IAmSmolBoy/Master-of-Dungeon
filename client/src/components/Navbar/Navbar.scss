@@ -1,0 +1,37 @@
+@import "../../App.scss";
+
+.nav {
+    height: 100%;
+    width: 7%;
+    transition: width .3s ease-in-out;
+    background: $blue;
+
+    &:hover {
+        width: 15%;
+    }
+
+    &-list {
+        list-style: none;
+        padding: 1vh 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        overflow-x: hidden;
+        overflow-y: auto;
+        white-space: nowrap;
+        text-align: center;
+        scroll-behavior: smooth;
+
+        &-item {
+            padding: 2.5vh 0;
+            width: max-content;
+            margin: 0 auto;
+        }
+
+        &-header {
+            color: $darkyellow;
+            text-transform: capitalize;
+        }
+    }
+}
