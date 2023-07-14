@@ -1,12 +1,26 @@
-import { initializeApp } from "firebase/app";
-import { getStorage } from "firebase/storage";
+// WIP
 
-const firebaseConfig = {
-    storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_URL
-};
+// import { initializeApp } from "firebase/app";
+// import { getStorage, ref, uploadBytes } from "firebase/storage";
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
+// const firebaseConfig = {
+//     storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_URL
+// };
 
-// Initialize Cloud Storage and get a reference to the service
-const storage = getStorage(app);
+// // Initialize Firebase
+// const app = initializeApp(firebaseConfig);
+
+// // Initialize Cloud Storage and get a reference to the service
+// const storage = getStorage(app);
+
+// async function upload(file) {
+//     const storageRef = ref(storage, 'images/' + file.name);
+//     const snapshot = await uploadBytes(storageRef, file)
+
+//     console.log(snapshot)
+//     return snapshot
+// }
+
+// export {
+//     upload
+// }

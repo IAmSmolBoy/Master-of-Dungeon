@@ -1,13 +1,13 @@
 // ------------------------ Imports ------------------------
 
-import React, { useState, useEffect } from "react"
-import $ from "jquery"
-import axios from "axios"
+import React, { useState, useEffect, useReducer } from "react"
 
-import { IoMdAddCircle } from "react-icons/io"
+import { AdvancedImage } from '@cloudinary/react';
+// import { upload } from "../../firebase"
 
 import Modal from "../../components/Modal/Modal"
 import Navbar from "../../components/Navbar/Navbar"
+import NavbarAdd from "../../components/NavbarAdd/NavbarAdd";
 
 import "./Map Page.scss"
 
@@ -25,15 +25,85 @@ import "./Map Page.scss"
 
 
 
-// ------------------------ Page ------------------------
+export default function MapPage({
+    setClassName,
+    cldData,
+    Add_Widget
+}) {
 
-export default function MapPage({ setClassName }) {
+    // --------------------- State Variables ---------------------
 
-    const [ image, setImage ] = useState(null);
-    const [ x, setX ] = useState(0)
-    const [ y, setY ] = useState(0)
+    // const [ image, setImage ] = useState(null);
+    const [ mapImg, setMapImg ] = useState(null)
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // ------------------------ Reducers ------------------------
+
+    // ------------ Maps and Tokens ------------
+
+    // Initial State
+
+    const initialMapData = {
+
+        map: {
+            curr: "",
+            maps: {},
+            position: {
+                x: 0,
+                y: 0,
+            }
+        },
+
+        token: {
+
+        }
+
+    }
+
+    // Reducer Function
+    
+    function reducer(state, action) {
+
+        const { type, payload } = action
+
+        switch(type) {
+
+            case "Set_Map_Details":
+
+                state.map = {
+                    ...state.map,
+                    ...payload
+                }
+
+                console.log(state)
+
+                return state
+
+            default:
+
+                return state
+
+        }
+
+    }
+    
+    const [ mapData, dispatch ] = useReducer(reducer, initialMapData)
+
+    // Actions
+    const Set_Map_Details = (mapDetails) => dispatch({ type: "Set_Map_Details", payload: mapDetails })
 
 
 
@@ -49,11 +119,34 @@ export default function MapPage({ setClassName }) {
 
     // --------------------- Helper Functions ---------------------
 
-    // Upload
+    // Upload <WIP>
 
-    function handleUpload(e) {
-        const file = $(e).prop("files")[0]
+    // function handleUpload(type) {
+    //     Firebase WIP
+
+    //     const file = $(e.target).prop("files")[0]
+    //     console.log(file)
+    //     upload(file).then(res => {
+    //         console.log(res)
+    //     })
+    // }
+
+    // Get Local Storage Data
+
+    function Get_Stored_Data() {
+
+        const storageJSON = localStorage.getItem("mapData")
+
+        return storageJSON ?
+            JSON.parse(storageJSON) :
+            {
+                maps: {},
+                currMap: ""
+            }
+
     }
+        
+            
 
 
 
@@ -67,82 +160,83 @@ export default function MapPage({ setClassName }) {
 
 
 
+    // --------------------- Components ---------------------
 
-
-
-    // ------------------------ Components ------------------------
-
-    function NavbarAdd({ type }) {
+    function MapNavAdd({ type, children }) {
         return (
-            <Navbar className={type + " add"} type={type}>
-                <li className={"nav-list-item add-item " + type}>
-                    <label htmlFor="upload-file" className={type + " add-item-btn"}>
-                        <IoMdAddCircle />
-                        <input
-                            type="file"
-                            name={type}
-                            id="upload-file"
-                            className={type + "-input"}
-                            accept="image/*"
-                            onChange={handleUpload}
-                            hidden />
-                    </label>
-                </li>
-            </Navbar>
+            <NavbarAdd
+                type={type}
+                setMapImg={setMapImg}
+                Get_Stored_Data={Get_Stored_Data}
+                cldData={cldData}
+                Add_Widget={Add_Widget}
+            >
+                {
+                    children
+                }
+            </NavbarAdd>
         )
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // ------------------------ Page ------------------------
+
     useEffect(() => {
-        $(async function () {
-            console.log("-------------Start-------------")
-            console.log(
-                localStorage.getItem("maps"),
-                localStorage.getItem("current map")
-            )
 
-            setClassName("map-page")
+        // Getting Local Storage Data
+        const storageMapData = Get_Stored_Data()
+        const { maps, currMap } = storageMapData
 
-            try {
-                const apiStatus = await axios.get(`${process.env.REACT_APP_API_URI}/api`);
-                console.log('API Status:', apiStatus.data.message);
-
-                // const postResponse = await axios.post(`/api/data`, { name: 'John', age: 25 });
-                // console.log('POST response:', postResponse.data);
-
-                // const putResponse = await axios.put(`/api/data/1`, { name: 'Jane', age: 30 });
-                // console.log('PUT response:', putResponse.data);
-
-                // const deleteResponse = await axios.delete(`/api/data/1`);
-                // console.log('DELETE response:', deleteResponse.data);
-
-            } catch (error) {
-                console.log('API Status:', "Something went wrong.");
-                console.error('Error:', error);
-            }
-        });
-
-    }, [ setClassName ])
-
-
-
-
+        setMapImg(
+            cldData.cld ?
+            cldData.cld.image(maps[currMap]) :
+            null
+        )
+        setClassName("map-page")
+        Set_Map_Details({
+            curr: currMap,
+            maps
+        })
+        
+    }, [ setClassName, cldData.cld ])
+    
     return (
         <>
-            {
-                image ?
-                    <img src={URL.createObjectURL(image)} alt="Map" className="map-page-image" /> :
-                    <></>
-            }
+            <div className="map-page-map">
+                {
+                    // image ?
+                    //     <img src={URL.createObjectURL(image)} alt="Map" className="map-page-image" /> :
+                    //     <></>
+                    mapImg ?
+                        <AdvancedImage cldImg={ mapImg } /> :
+                        <></>
+                }
+            </div>
             <Modal />
             <Navbar type="party">
 
             </Navbar>
-            <NavbarAdd type="maps">
+            <MapNavAdd type="maps">
 
-            </NavbarAdd>
-            <NavbarAdd type="tokens">
+            </MapNavAdd>
+            <MapNavAdd type="tokens">
 
-            </NavbarAdd>
+            </MapNavAdd>
         </>
     )
+
 }
